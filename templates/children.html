@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    {% if current_user.is_authenticated %}
+        <form class="uk-form-stacked uk-overlay uk-overlay-default uk-width-1-2">
+
+            <div class="uk-margin">
+                <label class="uk-form-label uk-text-center" for="form-stacked-text">Уровень мероприятия</label>
+                <select class="uk-select uk-margin-small-bottom">
+                    <option>Международный</option>
+                    <option>Федеральный</option>
+                    <option>Региональный</option>
+                    <option>Муниципальный</option>
+                    <option>Институциональный</option>
+                </select>
+                <div class="uk-form-controls uk-margin-small-bottom">
+                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="Номинация">
+                </div>
+                <label class="uk-form-label uk-text-center" for="form-stacked-text">Дистанционный</label>
+                <select class="uk-select uk-margin-small-bottom">
+                    <option>Да</option>
+                    <option>Нет</option>
+                </select>
+                <div class="uk-form-controls uk-margin-small-bottom">
+                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="Объединение">
+                </div>
+                <label class="uk-form-label uk-text-center" for="form-stacked-text">Коллектив</label>
+                <select class="uk-select uk-margin-small-bottom">
+                    <option>Да</option>
+                    <option>Нет</option>
+                </select>
+                <div class="uk-form-controls uk-margin-small-bottom">
+                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="Место проведения">
+                </div>
+                <div class="uk-form-controls uk-margin-large-bottom">
+                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="Дата проведения">
+
+                </div>
+            <div class="uk-grid uk-margin-large-bottom">
+                {% for _ in range(15) %}
+                        <div class="uk-width-1-2@s">
+                            <input class="uk-input" type="text" placeholder="ФИО участника">
+                        </div>
+                        <div class="uk-width-1-4@s">
+                            <input class="uk-input" type="text" placeholder="Место">
+                        </div>
+
+                {% endfor %}
+            </div>
+                <button class="uk-button uk-button-default uk-width-1-1">Отправить</button>
+
+            </div>
+        </form>
+    {% else %}
+        <div class="uk-margin uk-overlay uk-overlay-default">
+            <h1>Необходима <a href="/login">авторизация</a></h1>
+        </div>
+    {% endif %}
+
+{% endblock %}

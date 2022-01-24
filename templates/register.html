@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <form class="uk-form-stacked uk-overlay uk-overlay-default" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon" uk-icon="icon: user"></span>
+                {{ form.name(class="uk-input", placeholder="Имя", type="text") }}
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon" uk-icon="icon: user"></span>
+                {{ form.surname(class="uk-input", placeholder="Фамилия", type="text") }}
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon" uk-icon="icon: user"></span>
+                {{ form.patronymic(class="uk-input", placeholder="Отчество", type="text") }}
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                {{ form.password(class="uk-input", placeholder="Пароль", type="password") }}
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                {{ form.password_again(class="uk-input", placeholder="Повторите пароль", type="password") }}
+            </div>
+        </div>
+        {{ form.submit(class="uk-button uk-button-default uk-width-1-1") }}
+{{ message }}
+    </form>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <form class="uk-form-stacked uk-overlay uk-overlay-default" method="post">
+        {{ form.hidden_tag() }}
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon" uk-icon="icon: user"></span>
+                {{ form.surname(class="uk-input", type="text") }}
+                {% for error in form.surname.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                {{ form.password(class="uk-input", type="password")}}
+                {% for error in form.password.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            {{ form.remember_me(class="uk-checkbox", type="checkbox") }} {{ form.remember_me.label }}
+
+        </div>
+        {{ form.submit(class="uk-button uk-button-default uk-width-1-1", onclick="UIkit.notification({message: {{ message }}, status: 'danger'})") }}
+
+    {{ message }}
+    </form>
+
+{% endblock %}
