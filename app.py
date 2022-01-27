@@ -17,6 +17,7 @@ db_sess = db_session.create_session()
 def main_page():
     return render_template('base.html')
 
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
