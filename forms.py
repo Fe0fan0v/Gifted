@@ -20,5 +20,6 @@ class LoginForm(FlaskForm):
 
 
 class AddChildren(FlaskForm):
+    level = StringField('Уровень мероприятия')
     fio = StringField('ФИО Участника')
     place = StringField('Место')

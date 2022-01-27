@@ -24,14 +24,21 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
+@app.route('/account', methods=['GET'])
+@login_required
+def my_account():
+    return render_template('personal_account.html')
+
+
 @app.route('/add_children', methods=['GET', 'POST'])
+@login_required
 def add_children():
     form = AddChildren()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         contest = AddChildren(
             teacher=current_user.surname,
-
+            level=form.level.data,
         )
     return render_template('children.html')
 
@@ -44,7 +51,7 @@ def login():
         user = db_sess.query(User).filter(User.surname == form.surname.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/add_children")
+            return redirect("/account")
         if not user:
             return render_template('login.html', title='Авторизация', message="Вы не зарегистрированы",
                                    form=form, color='yellow')
