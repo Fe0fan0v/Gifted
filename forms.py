@@ -28,7 +28,6 @@ class AddChildren(FlaskForm):
     collective = SelectField('Коллектив', choices=['Да', 'Нет'])
     place = StringField('Место проведение')
     date = StringField('Дата проведения (Пример: 20.12.2022)')
-    add_children = SubmitField('Добавить участника')
     send = SubmitField('Отправить')
     fio1 = StringField('ФИО Участника')
     position1 = StringField('Место')

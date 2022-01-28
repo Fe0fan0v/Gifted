@@ -35,11 +35,8 @@ def my_account():
 @login_required
 def add_children():
     form = AddChildren()
-    added = False
-    quantity = 0
-    if 'Добавить участника' in request.form and form.validate():
-        added = True
-    if 'Отправить' and added and form.validate_on_submit():
+    if form.validate_on_submit():
+        fields = request['f']
         db_sess = db_session.create_session()
         contest = AddChildren(
             teacher=current_user.surname,
@@ -50,9 +47,9 @@ def add_children():
             collective=True if form.distant.data == 'Да' else False,
             place=form.place.data,
             date=datetime.strptime(form.date.data, "%d.%m.%Y"),
-            participants=[[part, pos] for part, pos in form.fio1.data, form.position1.data]
+            # participants=[[part, pos] for part, pos in form.fio1.data, form.position1.data]
         )
-    return render_template('children.html', form=form, added=added, quantity=quantity)
+    return render_template('children.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])

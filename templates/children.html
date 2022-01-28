@@ -1,41 +1,65 @@
 {% extends 'base.html' %}
 {% block content %}
-    {% if added %}
-        <form id="addform" name="formtoadd" class="uk-form-stacked uk-overlay uk-overlay-default uk-width-1-2">
 
-            <div class="uk-margin">
-                <label class="uk-form-label uk-text-center" for="form-stacked-text">Уровень мероприятия</label>
-                    {{ form.level(class="uk-select uk-margin-small-bottom") }}
-                <div class="uk-form-controls uk-margin-small-bottom">
-                    {{ form.nomination(class="uk-input", type="text", placeholder="Номинация") }}
-                </div>
-                <label class="uk-form-label uk-text-center" for="form-stacked-text">Дистанционный</label>
-                    {{ form.distant(class="uk-select uk-margin-small-bottom") }}
-                <div class="uk-form-controls uk-margin-small-bottom">
-                    {{ form.union(class="uk-input", type="text", placeholder="Объединение") }}
-                </div>
-                <label class="uk-form-label uk-text-center" for="form-stacked-text">Коллектив</label>
-                    {{ form.collective(class="uk-select uk-margin-small-bottom") }}
-                <div class="uk-form-controls uk-margin-small-bottom">
-                    {{ form.place(class="uk-input", type="text", placeholder="Место проведения") }}
-                </div>
-                <div class="uk-form-controls uk-margin-large-bottom">
-                    {{ form.date(class="uk-input", type="text", placeholder="Дата проведения (Пример: 20.12.2022)") }}
-                </div>
-                <div class="uk-grid uk-margin-large-bottom">
-                    <div class="uk-width-2-3@s">
-                        {{ form.fio1(class="uk-input", type="text", placeholder="ФИО участника") }}
-                    </div>
-                    <div class="uk-width-1-3@s">
-                        {{ form.position1(class="uk-input", type="text", placeholder="Место") }}
-                    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var maxField = 15; //Input fields increment limitation
+            var addButton = $('.add_button'); //Add button selector
+            var wrapper = $('.wrapper'); //Input field wrapper
+            var fieldHTML = '<div class="uk-width-2-3@s"> <input class="uk-input" type="text" placeholder="ФИО участника"> </div><div class="uk-width-1-3@s"><input class="uk-input" type="text" placeholder="Место"> </div>'; //New input field html
+            var x = 1; //Initial field counter is 1
 
-                </div>
-                {{ form.add_children(class="uk-button uk-button-default uk-width-1-1 uk-margin") }}
-                {{ form.send(class="uk-button uk-button-primary uk-width-1-1") }}
+            //Once add button is clicked
+            $(addButton).click(function () {
+                //Check maximum number of input fields
+                if (x < maxField) {
+                    x++; //Increment field counter
+                    $(wrapper).append(fieldHTML); //Add field html
+                }
+            });
+
+            var statusObj={"desc":item, "status":status};
+          $.ajax({
+                    url:"/robot/api/"+item,
+                    type: "POST",
+                    contentType:"applicaton/json",
+                    dataType:"json",
+                    data: JSON.stringify(statusObj)
+          });
+        });
+    </script>
+    <form id="addform" name="formtoadd" class="uk-form-stacked uk-overlay uk-overlay-default uk-width-1-2">
+
+        <div class="uk-margin">
+            <label class="uk-form-label uk-text-center" for="form-stacked-text">Уровень мероприятия</label>
+            {{ form.level(class="uk-select uk-margin-small-bottom") }}
+            <div class="uk-form-controls uk-margin-small-bottom">
+                {{ form.nomination(class="uk-input", type="text", placeholder="Номинация") }}
             </div>
-        </form>
-    {% else %}
+            <label class="uk-form-label uk-text-center" for="form-stacked-text">Дистанционный</label>
+            {{ form.distant(class="uk-select uk-margin-small-bottom") }}
+            <div class="uk-form-controls uk-margin-small-bottom">
+                {{ form.union(class="uk-input", type="text", placeholder="Объединение") }}
+            </div>
+            <label class="uk-form-label uk-text-center" for="form-stacked-text">Коллектив</label>
+            {{ form.collective(class="uk-select uk-margin-small-bottom") }}
+            <div class="uk-form-controls uk-margin-small-bottom">
+                {{ form.place(class="uk-input", type="text", placeholder="Место проведения") }}
+            </div>
+            <div class="uk-form-controls uk-margin-large-bottom">
+                {{ form.date(class="uk-input", type="text", placeholder="Дата проведения (Пример: 20.12.2022)") }}
+            </div>
+            <div class="uk-grid uk-margin-large-bottom wrapper">
+                <div class="uk-width-2-3@s">
+                    {{ form.fio1(class="uk-input", type="text", placeholder="ФИО участника") }}
+                </div>
+                <div class="uk-width-1-3@s">
+                    {{ form.position1(class="uk-input", type="text", placeholder="Место") }}
+                </div>
+            </div>
+            <a href="javascript:void(0);" class="add_button uk-button uk-button-default uk-width-1-1 uk-margin" title="Add field">Добавить участника</a>
+            {{ form.send(class="uk-button uk-button-primary uk-width-1-1") }}
+        </div>
+    </form>
 
-    {% endif %}
 {% endblock %}
