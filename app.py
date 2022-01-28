@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from forms import RegisterForm, LoginForm, AddChildren
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 import db_session
 from models import User
+from datetime import datetime
 
 app = Flask(__name__, static_folder="static")
 app.config['SECRET_KEY'] = 'super_secret_key'
@@ -34,13 +35,24 @@ def my_account():
 @login_required
 def add_children():
     form = AddChildren()
-    if form.validate_on_submit():
+    added = False
+    quantity = 0
+    if 'Добавить участника' in request.form and form.validate():
+        added = True
+    if 'Отправить' and added and form.validate_on_submit():
         db_sess = db_session.create_session()
         contest = AddChildren(
             teacher=current_user.surname,
             level=form.level.data,
+            nomination=form.nomination.data,
+            distant=True if form.distant.data == 'Да' else False,
+            union=form.union.data,
+            collective=True if form.distant.data == 'Да' else False,
+            place=form.place.data,
+            date=datetime.strptime(form.date.data, "%d.%m.%Y"),
+            participants=[[part, pos] for part, pos in form.fio1.data, form.position1.data]
         )
-    return render_template('children.html')
+    return render_template('children.html', form=form, added=added, quantity=quantity)
 
 
 @app.route('/login', methods=['GET', 'POST'])

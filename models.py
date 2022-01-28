@@ -42,4 +42,4 @@ class Contest(SqlAlchemyBase, SerializerMixin, UserMixin):
     collective = sqlalchemy.Column(sqlalchemy.Boolean)
     place = sqlalchemy.Column(sqlalchemy.String)
     date = sqlalchemy.Column(sqlalchemy.DATE)
-    participants = sqlalchemy.Column(sqlalchemy.ARRAY(str))
+    participants = sqlalchemy.Column(sqlalchemy.ARRAY(list))

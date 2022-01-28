@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, PasswordField, BooleanField
+from wtforms import SubmitField, StringField, PasswordField, BooleanField, SelectField, DateField
 from wtforms.validators import DataRequired
 
 
@@ -20,6 +20,15 @@ class LoginForm(FlaskForm):
 
 
 class AddChildren(FlaskForm):
-    level = StringField('Уровень мероприятия')
-    fio = StringField('ФИО Участника')
-    place = StringField('Место')
+    level = SelectField('Уровень мероприятия', choices=['Международный', 'Федеральный', 'Региональный', 'Муниципальный',
+                                                        'Институциональный'])
+    nomination = StringField('Номинация')
+    distant = SelectField('Дистанционный', choices=['Да', 'Нет'])
+    union = StringField('Объединение')
+    collective = SelectField('Коллектив', choices=['Да', 'Нет'])
+    place = StringField('Место проведение')
+    date = StringField('Дата проведения (Пример: 20.12.2022)')
+    add_children = SubmitField('Добавить участника')
+    send = SubmitField('Отправить')
+    fio1 = StringField('ФИО Участника')
+    position1 = StringField('Место')
