@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request
 from forms import RegisterForm, LoginForm, AddChildren
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 import db_session
-from models import User
+from models import User, Contest
 from datetime import datetime
 
 app = Flask(__name__, static_folder="static")
@@ -36,7 +36,6 @@ def my_account():
 def add_children():
     form = AddChildren()
     if form.validate_on_submit():
-        fields = request['f']
         db_sess = db_session.create_session()
         contest = AddChildren(
             teacher=current_user.surname,
@@ -47,9 +46,33 @@ def add_children():
             collective=True if form.distant.data == 'Да' else False,
             place=form.place.data,
             date=datetime.strptime(form.date.data, "%d.%m.%Y"),
-            # participants=[[part, pos] for part, pos in form.fio1.data, form.position1.data]
+            participants={form.fio1.data: form.position1.data, form.fio2.data: form.position2.data,
+                          form.fio3.data: form.position3.data,
+                          form.fio4.data: form.position4.data, form.fio5.data: form.position5.data,
+                          form.fio6.data: form.position6.data,
+                          form.fio7.data: form.position7.data, form.fio8.data: form.position8.data,
+                          form.fio9.data: form.position9.data,
+                          form.fio10.data: form.position10.data, form.fio11.data: form.position11.data,
+                          form.fio12.data: form.position12.data,
+                          form.fio13.data: form.position13.data, form.fio14.data: form.position14.data,
+                          form.fio15.data: form.position15.data}
         )
+        for i in contest.participants:
+            if not i:
+                del (contest.participants[i])
+        print(contest.level)
+        db_sess.add(contest)
+        db_sess.commit()
+        return redirect('/account')
     return render_template('children.html', form=form)
+
+
+@app.route('/my_contests', methods=['GET'])
+@login_required
+def my_contests():
+    db_sess = db_session.create_session()
+    contests = db_sess.query(Contest).filter(Contest.teacher == current_user.surname).all()
+    return render_template('contests.html', contests=contests)
 
 
 @app.route('/login', methods=['GET', 'POST'])
