@@ -42,4 +42,7 @@ class Contest(SqlAlchemyBase, SerializerMixin, UserMixin):
     collective = sqlalchemy.Column(sqlalchemy.Boolean)
     place = sqlalchemy.Column(sqlalchemy.String)
     date = sqlalchemy.Column(sqlalchemy.DATE)
-    participants = sqlalchemy.Column(sqlalchemy.ARRAY(list))
+    participants = sqlalchemy.Column(sqlalchemy.JSON)
+
+    def __repr__(self):
+        return f'{self.participants}'

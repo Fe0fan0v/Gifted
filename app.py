@@ -1,8 +1,8 @@
 from flask import Flask, render_template, redirect, request
-from forms import RegisterForm, LoginForm, AddChildren
+from forms import RegisterForm, LoginForm, AddChildren, Participant
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 import db_session
-from models import User
+from models import User, Contest
 from datetime import datetime
 
 app = Flask(__name__, static_folder="static")
@@ -35,9 +35,12 @@ def my_account():
 @login_required
 def add_children():
     form = AddChildren()
+    children = Participant()
     if form.validate_on_submit():
-        fields = request['f']
         db_sess = db_session.create_session()
+        participants = {}
+        for part in form.participants.data:
+            participants[part['fio']] = part['position']
         contest = AddChildren(
             teacher=current_user.surname,
             level=form.level.data,
@@ -47,9 +50,24 @@ def add_children():
             collective=True if form.distant.data == 'Да' else False,
             place=form.place.data,
             date=datetime.strptime(form.date.data, "%d.%m.%Y"),
-            # participants=[[part, pos] for part, pos in form.fio1.data, form.position1.data]
+            participants=participants
         )
-    return render_template('children.html', form=form)
+        # db_sess.add(contest)
+        # db_sess.commit()
+        print('Data received')
+        print(contest)
+        print(contest.participants)
+        print(contest.participants.data)
+        return redirect('/account')
+    return render_template('children.html', form=form, children=children)
+
+
+@app.route('/my_contests', methods=['GET'])
+@login_required
+def my_contests():
+    db_sess = db_session.create_session()
+    contests = db_sess.query(Contest).filter(Contest.teacher == current_user.surname).all()
+    return render_template('contests.html', contests=contests)
 
 
 @app.route('/login', methods=['GET', 'POST'])
