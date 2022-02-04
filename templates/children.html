@@ -6,47 +6,66 @@
             var maxField = 15; //Input fields increment limitation
             var addButton = $('.add_button'); //Add button selector
             var wrapper = $('.wrapper'); //Input field wrapper
-            var fieldHTML = '{% for subform in form.participants %} <div class="uk-width-2-3@s"> {{ subform.fio(class="uk-input", type="text", placeholder="ФИО участника") }} </div> <div class="uk-width-1-3@s"> {{ subform.position(class="uk-input", type="text", placeholder="Место") }}</div>{% endfor %} </div>'; //New input field html
-            var x = 1; //Initial field counter is 1
-
+            var x = 0; //Initial field counter is 1
             //Once add button is clicked
             $(addButton).click(function () {
                 //Check maximum number of input fields
                 if (x < maxField) {
-                    x++; //Increment field counter
-                    $(wrapper).append(fieldHTML); //Add field html
+                    $(wrapper).append('<div class="uk-width-2-3@s"> <input class="uk-input" type="text" placeholder="ФИО участника" name="fio[]" id="fio_' + x + '"> </div> <div class="uk-width-1-3@s"> <input class="uk-input" type="text" placeholder="Место" name="position[]" id="position_' + x + '"></div>');
+                    x++;//Increment field counter
                 }
+                return false;
+            })
+            $('#submit').click(function () {
+                $.ajax({
+                    url: "/add_children",
+                    method: "POST",
+                    data: $('#add_children').serialize(),
+                    success: function () {
+                        window.location.href="/account";
+                    }
+                });
             });
-
         });
     </script>
-    <form class="uk-form-stacked uk-overlay uk-overlay-default uk-width-1-2" method=post>
-        {{ form.csrf_token }}
+    <div id="resultbox"></div>
+    <form class="uk-form-stacked uk-overlay uk-overlay-default uk-width-1-2" method=post name="add_children"
+          id="add_children">
         <div class="uk-margin">
             <label class="uk-form-label uk-text-center" for="form-stacked-text">Уровень мероприятия</label>
-            {{ form.level(class="uk-select uk-margin-small-bottom") }}
+            <select class="uk-select uk-margin-small-bottom" name="level">
+                <option>Да</option>
+                <option>Нет</option>
+            </select>
             <div class="uk-form-controls uk-margin-small-bottom">
-                {{ form.nomination(class="uk-input", type="text", placeholder="Номинация") }}
+                <input class="uk-input" type="text" placeholder="Номинация" name="nomination">
             </div>
             <label class="uk-form-label uk-text-center" for="form-stacked-text">Дистанционный</label>
-            {{ form.distant(class="uk-select uk-margin-small-bottom") }}
+            <select class="uk-select uk-margin-small-bottom" name="distant">
+                <option>Да</option>
+                <option>Нет</option>
+            </select>
             <div class="uk-form-controls uk-margin-small-bottom">
-                {{ form.union(class="uk-input", type="text", placeholder="Объединение") }}
+                <input class="uk-input" type="text" placeholder="Объединение" name="union">
             </div>
             <label class="uk-form-label uk-text-center" for="form-stacked-text">Коллектив</label>
-            {{ form.collective(class="uk-select uk-margin-small-bottom") }}
+            <select class="uk-select uk-margin-small-bottom" name="collective">
+                <option>Да</option>
+                <option>Нет</option>
+            </select>
             <div class="uk-form-controls uk-margin-small-bottom">
-                {{ form.place(class="uk-input", type="text", placeholder="Место проведения") }}
+                <input class="uk-input" type="text" placeholder="Место проведения" name="place">
             </div>
             <div class="uk-form-controls uk-margin-large-bottom">
-                {{ form.date(class="uk-input", type="text", placeholder="Дата проведения (Пример: 20.12.2022)") }}
+                <input class="uk-input" type="text" placeholder="Дата проведения (Пример: 20.12.2022)" name="date">
             </div>
 
             <div class="uk-grid uk-margin-large-bottom wrapper">
             </div>
 
             <a class="add_button uk-button uk-button-default uk-width-1-1">Добавить участника</a>
-            {{ form.send(class="uk-button uk-button-primary uk-width-1-1", type="submit") }}
+            <input class="uk-button uk-button-primary uk-width-1-1" type="button" name="submit" id="submit"
+                   value="Отправить">
         </div>
     </form>
 

@@ -1,26 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
-
-    {% for contest in contests %}
-        <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
-            <h3 class="uk-card-title">{{ contest.nomination }}</h3>
-            <table class="uk-table">
-                <caption>{{ contest.union }}</caption>
-                <thead>
-                <tr>
-                    <th>Участник</th>
-                    <th>Место</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for person, place in contest.participants.items() %}
-                <tr>
-                    <td>{{ person }}</td>
-                    <td>{{ place }}</td>
-                </tr>
-                 {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% endfor %}
+        {% for contest in contests %}
+            <div class="uk-card uk-card-default uk-card-body uk-width-1-3@m">
+                <h3 class="uk-card-title">{{ contest.nomination }}</h3>
+                <table class="uk-table">
+                    <caption>{{ contest.union }}</caption>
+                    <thead>
+                    <tr>
+                        <th>Участник</th>
+                        <th>Место</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for person, place in contest.participants.items() %}
+                        <tr>
+                            <td>{{ person }}</td>
+                            <td>{{ place }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
 {% endblock %}

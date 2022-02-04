@@ -14,6 +14,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     patronymic = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    type = sqlalchemy.Column(sqlalchemy.String, default='teacher')
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     def __repr__(self):
@@ -25,15 +26,9 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
 
-    def get_all_values(self):
-        return {"id": self.id, 'name': self.name, 'surname': self.surname, 'email': self.email,
-                'my_problems': self.my_problems, 'ver_problems': self.ver_problems,
-                'my_thanks': self.my_thanks, 'ver_thanks': self.ver_thanks, 'hashed_password': self.hashed_password,
-                'modified_date': self.modifed_date}
-
 
 class Contest(SqlAlchemyBase, SerializerMixin, UserMixin):
-    __tablename__ = 'participant'
+    __tablename__ = 'contests'
     teacher = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
     level = sqlalchemy.Column(sqlalchemy.String)
     nomination = sqlalchemy.Column(sqlalchemy.String)
@@ -45,4 +40,4 @@ class Contest(SqlAlchemyBase, SerializerMixin, UserMixin):
     participants = sqlalchemy.Column(sqlalchemy.JSON)
 
     def __repr__(self):
-        return f'{self.participants}'
+        return f'{self.teacher}, {self.level}, {self.nomination}, {self.distant}, {self.union}, {self.collective}, {self.place}, {self.date}, {self.participants}'

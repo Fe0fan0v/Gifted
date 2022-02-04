@@ -1,5 +1,5 @@
-from flask import Flask, render_template, redirect, request
-from forms import RegisterForm, LoginForm, AddChildren, Participant
+from flask import Flask, render_template, redirect, request, url_for
+from forms import RegisterForm, LoginForm
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 import db_session
 from models import User, Contest
@@ -25,41 +25,41 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/account', methods=['GET'])
+@app.route('/account')
 @login_required
 def my_account():
-    return render_template('personal_account.html')
+    if current_user.type == 'teacher':
+        return render_template('personal_account.html')
+    else:
+        return render_template('methodist_account.html')
 
 
 @app.route('/add_children', methods=['GET', 'POST'])
 @login_required
 def add_children():
-    form = AddChildren()
-    children = Participant()
-    if form.validate_on_submit():
+    if request.method == 'POST':
         db_sess = db_session.create_session()
+        data = request.form
+        info = data.to_dict()
+        fios = data.getlist('fio[]')
+        positions = data.getlist('position[]')
         participants = {}
-        for part in form.participants.data:
-            participants[part['fio']] = part['position']
-        contest = AddChildren(
+        for i in range(len(fios)):
+            participants[fios[i]] = positions[i]
+        contest = Contest(
             teacher=current_user.surname,
-            level=form.level.data,
-            nomination=form.nomination.data,
-            distant=True if form.distant.data == 'Да' else False,
-            union=form.union.data,
-            collective=True if form.distant.data == 'Да' else False,
-            place=form.place.data,
-            date=datetime.strptime(form.date.data, "%d.%m.%Y"),
+            level=info['level'],
+            nomination=info['nomination'],
+            distant=True if info['distant'] == 'Да' else False,
+            union=info['union'],
+            collective=True if info['distant'] == 'Да' else False,
+            place=info['place'],
+            date=datetime.strptime(info['date'], "%d.%m.%Y"),
             participants=participants
         )
-        # db_sess.add(contest)
-        # db_sess.commit()
-        print('Data received')
-        print(contest)
-        print(contest.participants)
-        print(contest.participants.data)
-        return redirect('/account')
-    return render_template('children.html', form=form, children=children)
+        db_sess.add(contest)
+        db_sess.commit()
+    return render_template('children.html')
 
 
 @app.route('/my_contests', methods=['GET'])
@@ -107,7 +107,8 @@ def register():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/add_children')
+        login_user(user)
+        return redirect('/account')
     return render_template('register.html', title='Регистрация', form=form)
 
 
