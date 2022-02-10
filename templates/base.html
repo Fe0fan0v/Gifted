@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <title>Одарённые</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.10.1/dist/css/uikit.min.css"/>
-    <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.10.1/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.10.1/dist/js/uikit-icons.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.11.1/dist/css/uikit.min.css"/>
+{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/css/uikit.min.css">#}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/css/components/datepicker.css">
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/js/components/datepicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.11.1/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.11.1/dist/js/uikit-icons.min.js"></script>
 </head>
 <body>
 <div class="uk-position-relative">
@@ -19,21 +24,21 @@
                         <li class="uk-active"><a href="/">Главная</a></li>
                         <li>
                             {% if current_user.is_authenticated %}
-                            <a href="">{{ current_user.name }} {{ current_user.surname }}</a>
-                            <div class="uk-navbar-dropdown">
-                                <ul class="uk-nav uk-navbar-dropdown-nav">
-                                    <li><a href="/account">Мой кабинет</a></li>
-                                    <li><a href="/logout">Выход</a></li>
-                                </ul>
-                            </div>
+                                <a href="">{{ current_user.name }} {{ current_user.surname }}</a>
+                                <div class="uk-navbar-dropdown">
+                                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                                        <li><a href="/account">Мой кабинет</a></li>
+                                        <li><a href="/logout">Выход</a></li>
+                                    </ul>
+                                </div>
                             {% else %}
-                            <a href="">Вход/Регистрация</a>
-                            <div class="uk-navbar-dropdown">
-                                <ul class="uk-nav uk-navbar-dropdown-nav">
-                                    <li><a href="/login">Вход</a></li>
-                                    <li><a href="/register">Регистрация</a></li>
-                                </ul>
-                            </div>
+                                <a href="">Вход/Регистрация</a>
+                                <div class="uk-navbar-dropdown">
+                                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                                        <li><a href="/login">Вход</a></li>
+                                        <li><a href="/register">Регистрация</a></li>
+                                    </ul>
+                                </div>
                             {% endif %}
                         </li>
                     </ul>
@@ -44,7 +49,7 @@
 </div>
 
 <div class="uk-background-cover uk-height-viewport uk-flex uk-flex-center uk-flex-middle"
-         style="background-image: url(/static/images/background.jpg);">
+     style="background-image: url(/static/images/background.jpg);">
     {% block content %}
     {% endblock %}
 </div>
