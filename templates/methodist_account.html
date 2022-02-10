@@ -1,16 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/css/uikit.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/css/components/datepicker.css">
 
+    <div class="uk-card uk-card-default uk-overlay uk-overlay-default uk-card-body uk-width-1-2@m">
+        <h3 class="uk-card-title uk-position-top uk-text-center uk-margin-bottom">Вывод данных</h3>
+        <form class="uk-margin-top" method="post">
+            <span class="uk-label">Начало периода</span>
+            <input id="start-date" name="start-date" type="text" data-uk-datepicker="{
+    weekstart:1,
+    format:'DD.MM.YYYY',
+    i18n: {
+            months:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+            weekdays: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб']
+            },
+     minDate: true}">
+            <span class="uk-label">Конец периода</span>
+            <input id="finish-date" name="finish-date" type="text" data-uk-datepicker="{
+    weekstart:1,
+    format:'DD.MM.YYYY',
+    i18n: {
+            months:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+            weekdays: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб']
+            },
+     minDate: true}">
 
-    <form class="uk-form">
-        <input type="text" data-uk-datepicker="">
-    </form>
+                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                    {% for teacher in teachers %}
+                        <label><input class="uk-checkbox" name="teachers" type="checkbox"> {{ teacher }} </label>
+                    {% endfor %}
+                </div>
 
+            <input class="uk-button uk-button-primary uk-width-1-1" type="button" name="submit" id="submit"
+                   value="Сформировать">
+        </form>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/js/components/datepicker.js"></script>
 

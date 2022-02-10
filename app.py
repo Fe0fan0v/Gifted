@@ -25,13 +25,27 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/account')
+@app.route('/account', methods=['GET', 'POST'])
 @login_required
 def my_account():
     if current_user.type == 'teacher':
         return render_template('personal_account.html')
     else:
-        return render_template('methodist_account.html')
+        if request.method == 'POST':
+            start_date = datetime.strptime(request.form.get('start-date'), "%d.%m.%Y")
+            finish_date = datetime.strptime(request.form.get('finish-date'), "%d.%m.%Y")
+            teachers = request.form.getlist('teachers')
+            db_sess = db_session.create_session()
+            contests = {}
+            for teacher in teachers:
+                contest = db_sess.query(Contest).filter(Contest.teacher == teacher).filter(
+                    Contest.date >= start_date).filter(Contest.date <= finish_date).all()
+                contests[teacher].append(contest)
+            return render_template('search_results.html', contests=contests)
+        else:
+            db_sess = db_session.create_session()
+            teachers = [user.surname for user in db_sess.query(User).all()]
+            return render_template('methodist_account.html', teachers=teachers)
 
 
 @app.route('/add_children', methods=['GET', 'POST'])
