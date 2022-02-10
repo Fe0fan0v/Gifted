@@ -41,3 +41,17 @@ class Contest(SqlAlchemyBase, SerializerMixin, UserMixin):
 
     def __repr__(self):
         return f'{self.teacher}, {self.level}, {self.nomination}, {self.distant}, {self.union}, {self.collective}, {self.place}, {self.date}, {self.participants}'
+
+    @property
+    def serialize(self):
+        return {
+            'teacher': self.teacher,
+            'level': self.level,
+            'nomination': self.nomination,
+            'distant': self.distant,
+            'union': self.union,
+            'collective': self.collective,
+            'place': self.place,
+            'date': self.date,
+            'participants': self.participants,
+        }

@@ -3,7 +3,8 @@ from forms import RegisterForm, LoginForm
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 import db_session
 from models import User, Contest
-from datetime import datetime
+from datetime import datetime, date
+import json
 
 app = Flask(__name__, static_folder="static")
 app.config['SECRET_KEY'] = 'super_secret_key'
@@ -12,6 +13,14 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 db_session.global_init("database.db")
 db_sess = db_session.create_session()
+
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError("Type %s not serializable" % type(obj))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -32,20 +41,29 @@ def my_account():
         return render_template('personal_account.html')
     else:
         if request.method == 'POST':
-            start_date = datetime.strptime(request.form.get('start-date'), "%d.%m.%Y")
-            finish_date = datetime.strptime(request.form.get('finish-date'), "%d.%m.%Y")
+            start_date = datetime.strptime(request.form.get('start-date'), "%Y-%m-%d")
+            finish_date = datetime.strptime(request.form.get('finish-date'), "%Y-%m-%d")
             teachers = request.form.getlist('teachers')
             db_sess = db_session.create_session()
             contests = {}
             for teacher in teachers:
-                contest = db_sess.query(Contest).filter(Contest.teacher == teacher).filter(
-                    Contest.date >= start_date).filter(Contest.date <= finish_date).all()
-                contests[teacher].append(contest)
-            return render_template('search_results.html', contests=contests)
+                finded = db_sess.query(Contest).filter(Contest.teacher == teacher,
+                                                       Contest.date >= start_date, Contest.date <= finish_date)
+                finded = [x.serialize for x in finded.all()]
+                contests[teacher] = []
+                contests[teacher].append(*finded)
+            return redirect(url_for('results', teachers=json.dumps(contests, default=json_serial)))
         else:
             db_sess = db_session.create_session()
             teachers = [user.surname for user in db_sess.query(User).all()]
             return render_template('methodist_account.html', teachers=teachers)
+
+
+@app.route('/results/<teachers>')
+@login_required
+def results(teachers):
+    teachers = json.loads(teachers)
+    return render_template('search_results.html', teachers=teachers)
 
 
 @app.route('/add_children', methods=['GET', 'POST'])
