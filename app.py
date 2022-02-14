@@ -38,6 +38,7 @@ def load_user(user_id):
 def download(contest):
     # file_path = DOWNLOAD_FOLDER + ...
     # return send_file(file_path, as_attachment=True, attachment_filename='filename')
+    pass
 
 
 @app.route('/account', methods=['GET', 'POST'])
