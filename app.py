@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, send_file
 from forms import RegisterForm, LoginForm
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 import db_session
@@ -8,7 +8,7 @@ import json
 
 app = Flask(__name__, static_folder="static")
 app.config['SECRET_KEY'] = 'super_secret_key'
-
+DOWNLOAD_FOLDER = 'downloads/'
 login_manager = LoginManager()
 login_manager.init_app(app)
 db_session.global_init("database.db")
@@ -32,6 +32,12 @@ def main_page():
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
+
+
+@app.route('/download/<contest>')
+def download(contest):
+    # file_path = DOWNLOAD_FOLDER + ...
+    # return send_file(file_path, as_attachment=True, attachment_filename='filename')
 
 
 @app.route('/account', methods=['GET', 'POST'])

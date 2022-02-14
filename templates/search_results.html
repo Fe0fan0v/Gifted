@@ -1,29 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
 
+
     {% for teacher in teachers %}
-        <div class="uk-section uk-section-primary uk-preserve-color">
-            <div class="uk-container">
-                <div class="uk-panel uk-light uk-margin-medium">
-                    <h3>{{ teacher }}</h3>
-                </div>
+        <div class="uk-background-default uk-padding uk-panel uk-width-2-3">
 
-                <div class="uk-grid-match uk-child-width-expand@m" uk-grid>
-                    {% for contest in teachers[teacher] %}
-                        <div>
-                            <div class="uk-card uk-card-default uk-card-body">
-                                <p>{{ contest['nomination'] }}</p>
-                                <p>{{ contest['date'] }}</p>
-                                {% for participant in contest['participants'] %}
-                                    <p>{{ participant }}</p>
-                                    <p>{{ contest['participants'][participant] }}</p>
-                            </div>
-                                {% endfor %}
+
+        <h3 class="uk-text-center">{{ teacher }}</h3>
+        {% for contest in teachers[teacher] %}
+            <div class="uk-card uk-card-default uk-width-1-1@m">
+                <div class="uk-card-header">
+                    <div class="uk-grid-small uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                            <h3 class="uk-card-title uk-margin-remove-bottom">{{ contest['nomination'] }}</h3>
+                            <p class="uk-text-meta uk-margin-remove-top">
+                                <time datetime="2018-04-01T19:00">{{ contest['date'] }}</time>
+                            </p>
                         </div>
+                    </div>
                 </div>
-                    {% endfor %}
-            </div>
-        </div>
-    {% endfor %}
+                <div class="uk-card-body">
+                    <table class="uk-table uk-table-striped">
+                        <thead>
+                        <tr>
+                            <th>Участник</th>
+                            <th>Место</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for participant in contest['participants'] %}
+                            <tr>
+                                <td>{{ participant }}</td>
+                                <td>{{ contest['participants'][participant] }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
 
+                </div>
+                <div class="uk-card-footer">
+                    <a href="/download/{{ contest }}" class="uk-button uk-button-text">Сформировать</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
 {% endblock %}
