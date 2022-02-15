@@ -5,6 +5,8 @@ import db_session
 from models import User, Contest
 from datetime import datetime, date
 import json
+from create_file import create
+import ast
 
 app = Flask(__name__, static_folder="static")
 app.config['SECRET_KEY'] = 'super_secret_key'
@@ -36,9 +38,9 @@ def load_user(user_id):
 
 @app.route('/download/<contest>')
 def download(contest):
-    # file_path = DOWNLOAD_FOLDER + ...
-    # return send_file(file_path, as_attachment=True, attachment_filename='filename')
-    pass
+    contest = ast.literal_eval(contest)
+    file_path = create(contest, 'temp.xlsx')
+    return send_file(file_path, as_attachment=True, attachment_filename='temp.xlsx')
 
 
 @app.route('/account', methods=['GET', 'POST'])
@@ -62,7 +64,8 @@ def my_account():
             return redirect(url_for('results', teachers=json.dumps(contests, default=json_serial)))
         else:
             db_sess = db_session.create_session()
-            teachers = [user.surname for user in db_sess.query(User).all()]
+            teachers = [' '.join([user.surname, user.name[0], user.patronymic[0]]) for user in
+                        db_sess.query(User).all()]
             return render_template('methodist_account.html', teachers=teachers)
 
 
@@ -86,7 +89,7 @@ def add_children():
         for i in range(len(fios)):
             participants[fios[i]] = positions[i]
         contest = Contest(
-            teacher=current_user.surname,
+            teacher=' '.join([current_user.surname, current_user.name[0], current_user.patronymic[0]]),
             level=info['level'],
             nomination=info['nomination'],
             distant=True if info['distant'] == 'Да' else False,
@@ -105,7 +108,8 @@ def add_children():
 @login_required
 def my_contests():
     db_sess = db_session.create_session()
-    contests = db_sess.query(Contest).filter(Contest.teacher == current_user.surname).all()
+    contests = db_sess.query(Contest).filter(
+        Contest.teacher == ' '.join([current_user.surname, current_user.name[0], current_user.patronymic[0]])).all()
     return render_template('contests.html', contests=contests)
 
 
