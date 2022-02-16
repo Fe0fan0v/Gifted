@@ -29,7 +29,8 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 
 class Contest(SqlAlchemyBase, SerializerMixin, UserMixin):
     __tablename__ = 'contests'
-    teacher = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    teacher = sqlalchemy.Column(sqlalchemy.String)
     level = sqlalchemy.Column(sqlalchemy.String)
     nomination = sqlalchemy.Column(sqlalchemy.String)
     distant = sqlalchemy.Column(sqlalchemy.Boolean)

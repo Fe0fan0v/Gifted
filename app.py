@@ -5,8 +5,9 @@ import db_session
 from models import User, Contest
 from datetime import datetime, date
 import json
-from create_file import create
+from create_file import create_teacher_results
 import ast
+from pprint import pprint
 
 app = Flask(__name__, static_folder="static")
 app.config['SECRET_KEY'] = 'super_secret_key'
@@ -14,7 +15,6 @@ DOWNLOAD_FOLDER = 'downloads/'
 login_manager = LoginManager()
 login_manager.init_app(app)
 db_session.global_init("database.db")
-db_sess = db_session.create_session()
 
 
 def json_serial(obj):
@@ -39,8 +39,8 @@ def load_user(user_id):
 @app.route('/download/<contest>')
 def download(contest):
     contest = ast.literal_eval(contest)
-    file_path = create(contest, 'temp.xlsx')
-    return send_file(file_path, as_attachment=True, attachment_filename='temp.xlsx')
+    file_path = create_teacher_results(contest, f'{datetime.now().strftime("%d%m%y-%H%M")}.xlsx')
+    return send_file(file_path, as_attachment=True)
 
 
 @app.route('/account', methods=['GET', 'POST'])
@@ -56,11 +56,10 @@ def my_account():
             db_sess = db_session.create_session()
             contests = {}
             for teacher in teachers:
-                finded = db_sess.query(Contest).filter(Contest.teacher == teacher,
-                                                       Contest.date >= start_date, Contest.date <= finish_date)
-                finded = [x.serialize for x in finded.all()]
-                contests[teacher] = []
-                contests[teacher].append(*finded)
+                found = db_sess.query(Contest).filter(Contest.teacher == teacher,
+                                                      Contest.date >= start_date, Contest.date <= finish_date)
+                found = [x.serialize for x in found.all()]
+                contests[teacher] = [cont for cont in found]
             return redirect(url_for('results', teachers=json.dumps(contests, default=json_serial)))
         else:
             db_sess = db_session.create_session()
