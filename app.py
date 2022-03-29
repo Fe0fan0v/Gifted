@@ -5,7 +5,7 @@ import db_session
 from models import User, Contest
 from datetime import datetime, date
 import json
-from create_file import create_teacher_results
+from create_file import create_teacher_results, create_all_teachers
 import ast
 from pprint import pprint
 
@@ -40,6 +40,13 @@ def load_user(user_id):
 def download(contest):
     contest = ast.literal_eval(contest)
     file_path = create_teacher_results(contest, f'{datetime.now().strftime("%d%m%y-%H%M")}.xlsx')
+    return send_file(file_path, as_attachment=True)
+
+
+@app.route('/download/all/<contests>')
+def download_all(contests):
+    contests = ast.literal_eval(contests)
+    file_path = create_all_teachers(contests, f'{datetime.now().strftime("%d%m%y-%H%M")}.xlsx')
     return send_file(file_path, as_attachment=True)
 
 

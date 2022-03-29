@@ -1,7 +1,8 @@
 import xlsxwriter
+from pprint import pprint
 
 
-def create_teacher_results(data, filename):
+def create_teacher_results(data: dict, filename: str) -> str:
     workbook = xlsxwriter.Workbook(f'downloads/{filename}')
     form = workbook.add_format()
     form.set_font('Arial')
@@ -36,5 +37,35 @@ def create_teacher_results(data, filename):
             worksheet.write_column(f'A{prev_size + header_size}', parts_names)
             worksheet.write_column(f'B{prev_size + header_size}', parts_positions)
             prev_size = len(contest['participants']) + header_size + 2
+    workbook.close()
+    return f'downloads/{filename}'
+
+
+def create_all_teachers(data: dict, filename: str) -> str:
+    workbook = xlsxwriter.Workbook(f'downloads/{filename}')
+    header_format = workbook.add_format()
+    header_format.set_font('Arial')
+    header_format.set_font_size(12)
+    header_format.set_bg_color('#4285F4')
+    worksheet = workbook.add_worksheet()
+    worksheet.set_column(0, 0, 15)
+    worksheet.set_column(1, 1, 10)
+    worksheet.set_column(2, 2, 20)
+    worksheet.set_column(3, 3, 7)
+    worksheet.set_column(4, 4, 25)
+    worksheet.set_column(5, 5, 30)
+    worksheet.set_column(6, 6, 30)
+    worksheet.set_column(7, 7, 20)
+    worksheet.set_column(8, 8, 15)
+    header = ('Педагог', 'Уровень', 'Место проведения', 'Дистанционный',
+              'Объединение', 'ФИО участника', 'Итог', 'Дата проведения')
+    worksheet.write_row('A1', header, header_format)
+    for idx, teacher in enumerate(data):
+        worksheet.write(f'A{idx + 2}', teacher)
+        body = [data[teacher]['level'],
+                data[teacher]['place'],
+                'Да' if data[teacher]['distant'] else 'Нет',
+                data[teacher]['nomination']]
+                
     workbook.close()
     return f'downloads/{filename}'
