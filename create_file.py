@@ -42,6 +42,9 @@ def create_teacher_results(data: dict, filename: str) -> str:
 
 
 def create_all_teachers(data: dict, filename: str) -> str:
+    colors = ['#DC143C', '#7CFC00', '#FFB6C1', '#FF6347', '#228B22', '#FFD700', '#556B2F', '#20B2AA', '#00FFFF',
+              '#5F9EA0', '#EE82EE', '#7B68EE', '#8B4513', '#0000FF', '#2F4F4F', '#FF69B4', '#228B22', '#9ACD32',
+              '#C71585', '#6A5ACD', '#A52A2A', '#008000', '#8B0000']
     workbook = xlsxwriter.Workbook(f'downloads/{filename}')
     header_format = workbook.add_format()
     header_format.set_font('Arial')
@@ -58,14 +61,25 @@ def create_all_teachers(data: dict, filename: str) -> str:
     worksheet.set_column(7, 7, 20)
     worksheet.set_column(8, 8, 15)
     header = ('Педагог', 'Уровень', 'Место проведения', 'Дистанционный',
-              'Объединение', 'ФИО участника', 'Итог', 'Дата проведения')
+              'Направление', 'Номинация', 'Дата проведения', 'ФИО участника', 'Итог')
     worksheet.write_row('A1', header, header_format)
+    prev_len = 0
     for idx, teacher in enumerate(data):
-        worksheet.write(f'A{idx + 2}', teacher)
-        body = [data[teacher]['level'],
-                data[teacher]['place'],
-                'Да' if data[teacher]['distant'] else 'Нет',
-                data[teacher]['nomination']]
-                
+        teacher_format = workbook.add_format()
+        teacher_format.set_bg_color(colors[idx])
+        worksheet.write(f'A{idx + 2 + prev_len}', teacher, teacher_format)
+        for contest in data[teacher]:
+            patricipants = [(name, place) for name, place in contest['participants'].items()]
+            body = (contest['level'],
+                    contest['place'],
+                    'Да' if contest['distant'] else 'Нет',
+                    contest['union'],
+                    contest['nomination'],
+                    contest['date'],
+                    )
+            worksheet.write_row(f'B{idx + 2 + prev_len}', body)
+            for jdx, part in enumerate(patricipants):
+                worksheet.write_row(f'H{idx + 2 + jdx + prev_len}', part)
+            prev_len += len(patricipants)
     workbook.close()
     return f'downloads/{filename}'
